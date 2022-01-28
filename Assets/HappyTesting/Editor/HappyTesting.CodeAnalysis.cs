@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace HappyTesting.Editor {
-    public static partial class HappyTesting {
+    internal static partial class HappyTesting {
         static EditModeTestGenerateParam LoadEditModeTestGenerateParam(string code) {
             SyntaxTree tree = CSharpSyntaxTree.ParseText(code);
             var root = (CompilationUnitSyntax)tree.GetRoot();

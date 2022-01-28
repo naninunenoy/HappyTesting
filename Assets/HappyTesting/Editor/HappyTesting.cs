@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 namespace HappyTesting.Editor {
-    public static partial class HappyTesting {
+    internal static partial class HappyTesting {
         [MenuItem("Assets/HappyTesting/Generate TestCode Template")]
         public static void GenerateTestTemplate() {
             var (success, assetPath) = TryGetTextContentFromSelectionObjects(out var code);
@@ -15,8 +15,8 @@ namespace HappyTesting.Editor {
 
             var param = LoadEditModeTestGenerateParam(code);
             var fullText = GetEditModeTestFullText(param);
-            var dest = assetPath.Replace(param.className, param.testClassName);
-            GenerateScriptAsset(fullText, dest);
+            var testFileDest = assetPath.Replace($"{param.className}.cs", $"{param.testClassName}.cs");
+            GenerateScriptAsset(fullText, testFileDest);
         }
 
         /*[MenuItem("Assets/HappyTesting/Generate Interface TestMock")]
@@ -27,7 +27,7 @@ namespace HappyTesting.Editor {
             }
         }*/
 
-        static (bool, string assetPath) TryGetTextContentFromSelectionObjects(out string textContent) {
+        static (bool succes, string assetPath) TryGetTextContentFromSelectionObjects(out string textContent) {
             var obj = Selection.GetFiltered(typeof(TextAsset), SelectionMode.TopLevel).FirstOrDefault();
             if (obj == null) {
                 textContent = "";
