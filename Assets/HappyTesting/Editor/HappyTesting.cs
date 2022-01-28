@@ -1,11 +1,53 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
-namespace HappyTesting.Editor
-{
-    public static partial class HappyTesting
-    {
-    
+namespace HappyTesting.Editor {
+    public static partial class HappyTesting {
+        [MenuItem("Assets/HappyTesting/Generate TestCode Template")]
+        public static void GenerateTestTemplate() {
+            var (success, assetPath) = TryGetTextContentFromSelectionObjects(out var code);
+            if (!success) {
+                Debug.LogWarning("selection is not C# script");
+                return;
+            }
+
+            var param = LoadEditModeTestGenerateParam(code);
+            var fullText = GetEditModeTestFullText(param);
+            var dest = assetPath.Replace(param.className, param.testClassName);
+            GenerateScriptAsset(fullText, dest);
+        }
+
+        /*[MenuItem("Assets/HappyTesting/Generate Interface TestMock")]
+        public static void GenerateTestMock() {
+            var (success, assetPath) = TryGetTextContentFromSelectionObjects(out var code);
+            if (!success) {
+                Debug.LogWarning("selection is not C# script");
+            }
+        }*/
+
+        static (bool, string assetPath) TryGetTextContentFromSelectionObjects(out string textContent) {
+            var obj = Selection.GetFiltered(typeof(TextAsset), SelectionMode.TopLevel).FirstOrDefault();
+            if (obj == null) {
+                textContent = "";
+                return (false, "");
+            }
+
+            var path = AssetDatabase.GetAssetPath(obj);
+            var extension = Path.GetExtension(path);
+            if (extension != ".cs") {
+                textContent = "";
+                return (false, "");
+            }
+
+            textContent = (obj as TextAsset)?.text ?? "";
+            var success = !string.IsNullOrEmpty(textContent);
+            return (success, success ? AssetDatabase.GetAssetPath(obj) : "");
+        }
+
+        static void GenerateScriptAsset(string content, string path) {
+            File.WriteAllText(path, content);
+        }
     }
 }
