@@ -11,7 +11,7 @@ namespace HappyTesting.Editor {
 
         internal static string GetIReadonlyReactivePropertyPair(string typeName, string iReadOnlyReactivePropertyName) {
             var subjectName = $"{iReadOnlyReactivePropertyName.ToPascalCase()}Subject";
-            return $"public IReadonlyReactiveProperty<{typeName}> {iReadOnlyReactivePropertyName} => {subjectName}.ToReadonlyReactiveProperty();\n" +
+            return $"public IReadOnlyReactiveProperty<{typeName}> {iReadOnlyReactivePropertyName} => {subjectName}.ToReadOnlyReactiveProperty();\n" +
                    $"public readonly Subject<{typeName}> {subjectName} = new();";
         }
 
@@ -51,7 +51,7 @@ namespace HappyTesting.Editor {
             return $"public UniTaskCompletionSource<{taskType}> {taskName}Cts {{ get; }} = new();\n" +
                    $"public async UniTask<{taskType}> {taskName}(CancellationToken cancellationToken) {{\n" +
                    $"  await UniTask.Yield();\n" +
-                   $"  return {taskName}Cts.Task;\n" +
+                   $"  return await {taskName}Cts.Task;\n" +
                    $"}}";
         }
 
@@ -60,7 +60,7 @@ namespace HappyTesting.Editor {
             stringBuilder.Append($"{GetSetterResultList(taskName, paramList)}\n");
             var func = $"public async UniTask {taskName}(" +
                    $"{paramList.Select(x => $"{x.typeName} {x.argName}").Aggregate((prev, total) => $"{prev}, {total}")}" +
-                   $", CancellationToken cancellationToken) {{";
+                   $") {{";
             stringBuilder.Append($"{func}\n");
             stringBuilder.Append($"  await UniTask.Yield();\n");
             var body = paramList.Select(x => new { result = GetResultName(taskName, x.argName), x.argName })

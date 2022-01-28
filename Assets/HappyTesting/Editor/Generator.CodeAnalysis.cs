@@ -86,18 +86,44 @@ namespace HappyTesting.Editor {
             // interfaceのusing一覧
             var usingArr = root.Usings.Select(x => x.ToString()).ToArray();
             // namespaceとクラス名取得
-            var (namespaceName, interfaceName, syntax) = GetFirstInterfaceMemberNames(root);
+            var (orgNamespace, interfaceName, syntax) = GetFirstInterfaceMemberNames(root);
+            var namespaceStr = string.IsNullOrEmpty(orgNamespace) ? "Tests" : $"{orgNamespace}.Tests";
             var className = $"{interfaceName.TrimStart('I')}TestMock";
             StringBuilder stringBuilder = new();
             foreach (var mem in syntax.Members) {
+                var generate = "";
                 if (mem is MethodDeclarationSyntax method) {
-                    var gen = GetSetterPair(method.Identifier.ToString(),
-                        method.ParameterList.Parameters.Select(x => (x.Type.ToString(), x.Identifier.ToString())).ToArray());
-                    stringBuilder.Append(gen);
+                    var retTypeName = method.ReturnType.ToString();
+                    if (retTypeName == "void") {
+                        // setter
+                        generate = GetSetterPair(method.Identifier.ToString(),
+                            method.ParameterList.Parameters.Select(x => (x.Type.ToString(), x.Identifier.ToString())).ToArray());
+                    } else if (retTypeName == "UniTask") {
+                        // async setter
+                        generate = GetUniTaskSetterPair(method.Identifier.ToString(),
+                            method.ParameterList.Parameters.Select(x => (x.Type.ToString(), x.Identifier.ToString())).ToArray());
+                    } else if (retTypeName.Contains("<")) {
+                        // async getter
+                        var typeName = retTypeName.Replace("UniTask<", "")
+                            .Replace(">", "");
+                        generate = GetUniTaskGetterPair(method.Identifier.ToString(), typeName);
+                    }
+                } else if (mem is PropertyDeclarationSyntax prop) {
+                    Debug.Log(prop.Identifier);
+                    if (prop.Type.ToString().Contains("IReadOnlyReactiveProperty")) {
+                        var typeName = prop.Type.ToString().Replace("IReadOnlyReactiveProperty<", "")
+                            .Replace(">", "");
+                        generate = GetIReadonlyReactivePropertyPair(typeName, prop.Identifier.ToString());
+                    } else if (prop.Type.ToString().Contains("IObservable")) {
+                        var typeName = prop.Type.ToString().Replace("IObservable<", "")
+                            .Replace(">", "");
+                        generate = GetObservablePair(typeName, prop.Identifier.ToString());
+                    }
                 }
+                stringBuilder.Append(generate);
             }
 
-            return new InterfaceMockGenerateParam(usingArr, namespaceName, className, interfaceName,
+            return new InterfaceMockGenerateParam(usingArr, namespaceStr, className, interfaceName,
                 stringBuilder.ToString());
         }
     }
