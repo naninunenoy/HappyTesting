@@ -1,0 +1,9 @@
+{
+    "name": "dev.n5y.happytesting",
+    "displayName": "HappyTesting",
+    "version": "0.0.1",
+    "unity": "2021.2",
+    "description": "Unity Test utilities.",
+    "keywords": ["test", "editor"],
+    "author" : { "name": "naninunenoy" }
+}
