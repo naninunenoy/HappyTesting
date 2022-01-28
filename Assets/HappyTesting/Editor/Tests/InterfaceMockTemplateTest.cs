@@ -15,7 +15,7 @@ namespace HappyTesting.Editor.Tests {
         [Test]
         public void GetIReadonlyReactivePropertyObservablePairTest() {
             var code = Generator.GetIReadonlyReactivePropertyPair("int", "Fuga");
-            Assert.That(code.Contains(@"public IReadonlyReactiveProperty<int> Fuga => FugaSubject.ToReadonlyReactiveProperty();"), Is.True, code);
+            Assert.That(code.Contains(@"public IReadOnlyReactiveProperty<int> Fuga => FugaSubject.ToReadOnlyReactiveProperty();"), Is.True, code);
             Assert.That(code.Contains(@"public readonly Subject<int> FugaSubject = new();"), Is.True, code);
         }
         [Test]
@@ -49,7 +49,7 @@ namespace HappyTesting.Editor.Tests {
             var code = Generator.GetUniTaskGetterPair("GetHogeAsync", "string");
             Assert.That(code.Contains(@"public UniTaskCompletionSource<string> GetHogeAsyncCts { get; } = new();"), Is.True, code);
             Assert.That(code.Contains(@"public async UniTask<string> GetHogeAsync(CancellationToken cancellationToken) {"), Is.True, code);
-            Assert.That(code.Contains(@"return GetHogeAsyncCts.Task;"), Is.True, code);
+            Assert.That(code.Contains(@"return await GetHogeAsyncCts.Task;"), Is.True, code);
         }
         [Test]
         public void GetUniTaskSetterPairTest() {
@@ -57,7 +57,7 @@ namespace HappyTesting.Editor.Tests {
 
             Assert.That(code.Contains(@"public int SetHugaAsyncVal1Result { private set; get; }"), Is.True, code);
             Assert.That(code.Contains(@"public float SetHugaAsyncVal2Result { private set; get; }"), Is.True, code);
-            Assert.That(code.Contains(@"public async UniTask SetHugaAsync(int val1, float val2, CancellationToken cancellationToken) {"), Is.True, code);
+            Assert.That(code.Contains(@"public async UniTask SetHugaAsync(int val1, float val2) {"), Is.True, code);
             Assert.That(code.Contains(@"SetHugaAsyncVal1Result = val1;"), Is.True, code);
             Assert.That(code.Contains(@"SetHugaAsyncVal2Result = val2;"), Is.True, code);
         }
