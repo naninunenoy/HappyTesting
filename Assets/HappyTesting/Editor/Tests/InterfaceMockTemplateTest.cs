@@ -44,5 +44,22 @@ namespace HappyTesting.Editor.Tests {
                 new[] { ("int", "val1"), ("float", "val2") });
             Debug.Log(code);
         }
+        [Test]
+        public void GetUniTaskGetterPairTest() {
+            var code = Generator.GetUniTaskGetterPair("GetHogeAsync", "string");
+            Assert.That(code.Contains(@"public string GetHogeAsyncResult { set; get; }"), Is.True, code);
+            Assert.That(code.Contains(@"public async UniTask<string> GetHogeAsync(CancellationToken cancellationToken) {"), Is.True, code);
+            Assert.That(code.Contains(@"return GetHogeAsyncResult;"), Is.True, code);
+        }
+        [Test]
+        public void GetUniTaskSetterPairTest() {
+            var code = Generator.GetUniTaskSetterPair("SetHugaAsync", new[] { ("int", "val1"), ("float", "val2") });
+
+            Assert.That(code.Contains(@"public int SetHugaAsyncVal1Result { private set; get; }"), Is.True, code);
+            Assert.That(code.Contains(@"public float SetHugaAsyncVal2Result { private set; get; }"), Is.True, code);
+            Assert.That(code.Contains(@"public async UniTask SetHugaAsync(int val1, float val2, CancellationToken cancellationToken) {"), Is.True, code);
+            Assert.That(code.Contains(@"SetHugaAsyncVal1Result = val1;"), Is.True, code);
+            Assert.That(code.Contains(@"SetHugaAsyncVal2Result = val2;"), Is.True, code);
+        }
     }
 }

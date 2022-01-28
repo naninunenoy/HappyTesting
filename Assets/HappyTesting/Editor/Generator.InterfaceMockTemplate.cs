@@ -48,6 +48,30 @@ namespace HappyTesting.Editor {
             return stringBuilder.ToString();
         }
 
+        internal static string GetUniTaskGetterPair(string taskName, string taskType) {
+            return $"public {taskType} {taskName}Result {{ set; get; }}\n" +
+                   $"public async UniTask<{taskType}> {taskName}(CancellationToken cancellationToken) {{\n" +
+                   $"  await UniTask.Yield();\n" +
+                   $"  return {taskName}Result;\n" +
+                   $"}}";
+        }
+
+        internal static string GetUniTaskSetterPair(string taskName, (string typeName, string argName)[] paramList) {
+            StringBuilder stringBuilder = new();
+            stringBuilder.Append($"{GetSetterResultList(taskName, paramList)}\n");
+            var func = $"public async UniTask {taskName}(" +
+                   $"{paramList.Select(x => $"{x.typeName} {x.argName}").Aggregate((prev, total) => $"{prev}, {total}")}" +
+                   $", CancellationToken cancellationToken) {{";
+            stringBuilder.Append($"{func}\n");
+            stringBuilder.Append($"  await UniTask.Yield();\n");
+            var body = paramList.Select(x => new { result = GetResultName(taskName, x.argName), x.argName })
+                .Select(x => $"  {x.result} = {x.argName};")
+                .Aggregate((prev, total) => $"{prev}\n{total}");
+            stringBuilder.Append($"{body}\n");
+            stringBuilder.Append($"}}");
+            return stringBuilder.ToString();
+        }
+
         internal static string ToPascalCase(this string x) {
             return char.ToUpperInvariant(x[0]) + x[1..];
         }
@@ -55,6 +79,10 @@ namespace HappyTesting.Editor {
         internal static string ToCamelCase(this string x) {
             return char.ToLowerInvariant(x[0]) + x[1..];
 
+        }
+
+        internal static string ToTaskType(this string x) {
+            return x == "void" ? "" : $"<{x}>";
         }
     }
 }
