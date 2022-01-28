@@ -5,5 +5,5 @@ Unity Test Utilities
 Please add this line to `dependencies` of `Packages/manifest.json`.
 
 ```
-"dev.n5y.happytesting": "https://github.com/naninunenoy/HappyTesting.git?path=Assets"
+"dev.n5y.happytesting": "https://github.com/naninunenoy/HappyTesting.git?path=Assets/HappyTesting"
 ```
