@@ -50,6 +50,7 @@ namespace HappyTesting.Editor {
         static void GenerateScriptAsset(string content, string saveTo, string fileName) {
             var saveFullPath = Path.Combine(string.IsNullOrEmpty(saveTo) ? "Assets" : saveTo, fileName);
             File.WriteAllText(saveFullPath, content);
+            AssetDatabase.Refresh();
         }
     }
 }
