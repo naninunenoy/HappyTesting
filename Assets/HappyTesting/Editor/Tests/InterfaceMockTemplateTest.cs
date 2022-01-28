@@ -47,9 +47,9 @@ namespace HappyTesting.Editor.Tests {
         [Test]
         public void GetUniTaskGetterPairTest() {
             var code = Generator.GetUniTaskGetterPair("GetHogeAsync", "string");
-            Assert.That(code.Contains(@"public string GetHogeAsyncResult { set; get; }"), Is.True, code);
+            Assert.That(code.Contains(@"public UniTaskCompletionSource<string> GetHogeAsyncCts { get; } = new();"), Is.True, code);
             Assert.That(code.Contains(@"public async UniTask<string> GetHogeAsync(CancellationToken cancellationToken) {"), Is.True, code);
-            Assert.That(code.Contains(@"return GetHogeAsyncResult;"), Is.True, code);
+            Assert.That(code.Contains(@"return GetHogeAsyncCts.Task;"), Is.True, code);
         }
         [Test]
         public void GetUniTaskSetterPairTest() {

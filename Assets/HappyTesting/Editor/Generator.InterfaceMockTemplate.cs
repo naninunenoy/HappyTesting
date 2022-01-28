@@ -49,10 +49,10 @@ namespace HappyTesting.Editor {
         }
 
         internal static string GetUniTaskGetterPair(string taskName, string taskType) {
-            return $"public {taskType} {taskName}Result {{ set; get; }}\n" +
+            return $"public UniTaskCompletionSource<{taskType}> {taskName}Cts {{ get; }} = new();\n" +
                    $"public async UniTask<{taskType}> {taskName}(CancellationToken cancellationToken) {{\n" +
                    $"  await UniTask.Yield();\n" +
-                   $"  return {taskName}Result;\n" +
+                   $"  return {taskName}Cts.Task;\n" +
                    $"}}";
         }
 
