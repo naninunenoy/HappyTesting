@@ -38,11 +38,14 @@ namespace HappyTesting.Editor {
         public string outputAssetPath = "";
 
         public void Save() {
-            EditorPrefs.SetString($"{keyPrefix}_outputAssetPath", outputAssetPath);
+            EditorUserSettings.SetConfigValue($"{keyPrefix}_outputAssetPath", outputAssetPath);
         }
 
         public void Load() {
-            outputAssetPath = EditorPrefs.GetString($"{keyPrefix}_outputAssetPath", "Assets");
+            outputAssetPath = EditorUserSettings.GetConfigValue($"{keyPrefix}_outputAssetPath");
+            if (string.IsNullOrEmpty(outputAssetPath)) {
+                outputAssetPath = "Assets/";
+            }
         }
     }
 }
