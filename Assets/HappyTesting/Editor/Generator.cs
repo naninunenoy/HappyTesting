@@ -7,8 +7,7 @@ namespace HappyTesting.Editor {
     internal static partial class Generator {
         [MenuItem("Assets/HappyTesting/Generate TestCode Template")]
         public static void GenerateTestTemplate() {
-            var (success, assetPath) = TryGetTextContentFromSelectionObjects(out var code);
-            if (!success) {
+            if (!TryGetTextContentFromSelectionObjects(out var code)) {
                 Debug.LogWarning("selection is not C# script");
                 return;
             }
@@ -20,31 +19,35 @@ namespace HappyTesting.Editor {
             GenerateScriptAsset(fullText, destDir, $"{param.testClassName}.cs");
         }
 
-        /*[MenuItem("Assets/HappyTesting/Generate Interface TestMock")]
+        [MenuItem("Assets/HappyTesting/Generate Interface TestMock")]
         public static void GenerateTestMock() {
-            var (success, assetPath) = TryGetTextContentFromSelectionObjects(out var code);
-            if (!success) {
+            if (!TryGetTextContentFromSelectionObjects(out var code)) {
                 Debug.LogWarning("selection is not C# script");
             }
-        }*/
 
-        static (bool succes, string assetPath) TryGetTextContentFromSelectionObjects(out string textContent) {
+            var param = LoadInterfaceMockGenerateParam(code);
+            var gen = GetInterfaceTestMockFullText(param);
+            settings.Load();
+            var destDir = settings.outputAssetPath;
+            GenerateScriptAsset(gen, destDir, $"{param.className}.cs");
+        }
+
+        static bool TryGetTextContentFromSelectionObjects(out string textContent) {
             var obj = Selection.GetFiltered(typeof(TextAsset), SelectionMode.TopLevel).FirstOrDefault();
             if (obj == null) {
                 textContent = "";
-                return (false, "");
+                return false;
             }
 
             var path = AssetDatabase.GetAssetPath(obj);
             var extension = Path.GetExtension(path);
             if (extension != ".cs") {
                 textContent = "";
-                return (false, "");
+                return false;
             }
 
             textContent = (obj as TextAsset)?.text ?? "";
-            var success = !string.IsNullOrEmpty(textContent);
-            return (success, success ? AssetDatabase.GetAssetPath(obj) : "");
+            return !string.IsNullOrEmpty(textContent);
         }
 
         static void GenerateScriptAsset(string content, string saveTo, string fileName) {

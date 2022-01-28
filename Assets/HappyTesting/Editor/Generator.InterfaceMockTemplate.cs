@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 
 namespace HappyTesting.Editor {
@@ -81,8 +80,23 @@ namespace HappyTesting.Editor {
 
         }
 
-        internal static string ToTaskType(this string x) {
-            return x == "void" ? "" : $"<{x}>";
+        static string GetInterfaceTestMockFullText(InterfaceMockGenerateParam param) {
+            return interfaceTestMockTemplateText
+                .Replace("<#=HERE_IS_USING#>", string.Join("\n", param.usingList))
+                .Replace("<#=HERE_IS_NAMESPACE#>", param.namespaceName)
+                .Replace("<#=HERE_IS_CLASSNAME#>", param.className)
+                .Replace("<#=HERE_IS_INTERFACENAME#>", param.interfaceName)
+                .Replace("<#=HERE_IS_BODY#>", param.body);
         }
+
+        const string interfaceTestMockTemplateText = @"<#=HERE_IS_USING#>
+
+namespace <#=HERE_IS_NAMESPACE#>
+{
+    public class <#=HERE_IS_CLASSNAME#> : <#=HERE_IS_INTERFACENAME#>
+    {
+        <#=HERE_IS_BODY#>
+    }
+}";
     }
 }
