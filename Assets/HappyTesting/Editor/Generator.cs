@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 namespace HappyTesting.Editor {
-    internal static partial class HappyTesting {
+    internal static partial class Generator {
         [MenuItem("Assets/HappyTesting/Generate TestCode Template")]
         public static void GenerateTestTemplate() {
             var (success, assetPath) = TryGetTextContentFromSelectionObjects(out var code);

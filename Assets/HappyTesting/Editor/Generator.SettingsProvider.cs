@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace HappyTesting.Editor {
-    internal static partial class HappyTesting {
+    internal static partial class Generator {
         static readonly HappyTestingSettingsPrefs settings = new();
         static TextField outputAssetPathTextField;
 

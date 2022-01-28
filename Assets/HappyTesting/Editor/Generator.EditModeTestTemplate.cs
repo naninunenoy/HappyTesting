@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 namespace HappyTesting.Editor {
-    internal static partial class HappyTesting {
+    internal static partial class Generator {
         const string editModeTemplateUsingTag = "<#=HERE_IS_USING#>";
         const string editModeTemplateNamespaceTag = "<#=HERE_IS_NAMESPACE#>";
         const string editModeTemplateTestClassNameTag = "<#=HERE_IS_TESTCLASSNAME#>";
