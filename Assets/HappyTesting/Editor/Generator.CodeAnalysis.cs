@@ -88,7 +88,7 @@ namespace HappyTesting.Editor {
             // namespaceとクラス名取得
             var (orgNamespace, interfaceName, syntax) = GetFirstInterfaceMemberNames(root);
             var namespaceStr = string.IsNullOrEmpty(orgNamespace) ? "Tests" : $"{orgNamespace}.Tests";
-            var className = $"{interfaceName.TrimStart('I')}TestMock";
+            var className = $"{interfaceName.TrimStart('I')}Mock";
             StringBuilder stringBuilder = new();
             foreach (var mem in syntax.Members) {
                 var generate = "";
@@ -109,7 +109,6 @@ namespace HappyTesting.Editor {
                         generate = GetUniTaskGetterPair(method.Identifier.ToString(), typeName);
                     }
                 } else if (mem is PropertyDeclarationSyntax prop) {
-                    Debug.Log(prop.Identifier);
                     if (prop.Type.ToString().Contains("IReadOnlyReactiveProperty")) {
                         var typeName = prop.Type.ToString().Replace("IReadOnlyReactiveProperty<", "")
                             .Replace(">", "");
