@@ -15,8 +15,9 @@ namespace HappyTesting.Editor {
 
             var param = LoadEditModeTestGenerateParam(code);
             var fullText = GetEditModeTestFullText(param);
-            var testFileDest = assetPath.Replace($"{param.className}.cs", $"{param.testClassName}.cs");
-            GenerateScriptAsset(fullText, testFileDest);
+            settings.Load();
+            var destDir = settings.outputAssetPath;
+            GenerateScriptAsset(fullText, destDir, $"{param.testClassName}.cs");
         }
 
         /*[MenuItem("Assets/HappyTesting/Generate Interface TestMock")]
@@ -46,8 +47,9 @@ namespace HappyTesting.Editor {
             return (success, success ? AssetDatabase.GetAssetPath(obj) : "");
         }
 
-        static void GenerateScriptAsset(string content, string path) {
-            File.WriteAllText(path, content);
+        static void GenerateScriptAsset(string content, string saveTo, string fileName) {
+            var saveFullPath = Path.Combine(string.IsNullOrEmpty(saveTo) ? "Assets" : saveTo, fileName);
+            File.WriteAllText(saveFullPath, content);
         }
     }
 }
