@@ -118,6 +118,8 @@ namespace HappyTesting.Editor {
                         var typeName = prop.Type.ToString().Replace("IObservable<", "")
                             .Replace(">", "");
                         generate = GetObservablePair(typeName, prop.Identifier.ToString());
+                    } else {
+                        generate = GetPropertyAddSetter(prop.Identifier.ToString(), prop.Type.ToString());
                     }
                 }
                 stringBuilder.Append(generate);

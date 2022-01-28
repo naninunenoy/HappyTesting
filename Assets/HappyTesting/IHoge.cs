@@ -5,7 +5,7 @@ using UniRx;
 
 namespace HappyTesting {
     public interface IHoge {
-        //string Hoge { get; }
+        string Hoge { get; }
         void SetHoge(string hoge);
         IObservable<Unit> HogeObsevable { get; }
         IReadOnlyReactiveProperty<int> HogeValue { get; }

@@ -3,6 +3,10 @@ using System.Text;
 
 namespace HappyTesting.Editor {
     internal static partial class Generator {
+        internal static string GetPropertyAddSetter(string propertyName, string propertyType) {
+            return $"public {propertyType} {propertyName} {{ set; get; }}";
+        }
+
         internal static string GetObservablePair(string typeName, string observableName) {
             var subjectName = $"{observableName.ToPascalCase()}Subject";
             return $"public IObservable<{typeName}> {observableName} => {subjectName};\n" +

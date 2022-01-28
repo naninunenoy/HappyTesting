@@ -7,6 +7,11 @@ using UnityEngine.TestTools;
 namespace HappyTesting.Editor.Tests {
     public class InterfaceMockTemplateTest {
         [Test]
+        public void GetPropertyAddSetterTest() {
+            var code = Generator.GetPropertyAddSetter("HogeProp", "string");
+            Assert.That(code.Contains(@"public string HogeProp { set; get; }"), Is.True, code);
+        }
+        [Test]
         public void GetObservablePairTest() {
             var code = Generator.GetObservablePair("Unit", "Hoge");
             Assert.That(code.Contains(@"public IObservable<Unit> Hoge => HogeSubject;"), Is.True, code);
