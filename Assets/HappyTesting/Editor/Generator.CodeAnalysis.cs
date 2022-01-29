@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using UnityEngine;
 
 namespace HappyTesting.Editor {
     internal static partial class Generator {
@@ -59,7 +57,8 @@ namespace HappyTesting.Editor {
             if (firstClassOrStructDeclaration is not null) {
                 firstClassOrStructName = firstClassOrStructDeclaration switch {
                     StructDeclarationSyntax x => x.Identifier.Text,
-                    ClassDeclarationSyntax x => x.Identifier.Text
+                    ClassDeclarationSyntax x => x.Identifier.Text,
+                    _ => ""
                 };
             }
 
