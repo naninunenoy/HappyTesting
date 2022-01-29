@@ -12,7 +12,7 @@ namespace HappyTesting.Editor {
                 Debug.LogWarning("selection is not C# script");
                 return;
             }
-            var destDir = GetOutputPathFromDialog(Application.dataPath);
+            var destDir = GetOutputPathFromDialog();
             if (string.IsNullOrEmpty(destDir)) {
                 return;
             }
@@ -31,7 +31,7 @@ namespace HappyTesting.Editor {
             if (!ContainsScriptInSelection(out var texts)) {
                 Debug.LogWarning("selection is not C# script");
             }
-            var destDir = GetOutputPathFromDialog(Application.dataPath);
+            var destDir = GetOutputPathFromDialog();
             if (string.IsNullOrEmpty(destDir)) {
                 return;
             }
@@ -53,30 +53,13 @@ namespace HappyTesting.Editor {
 
             scripts = textAssets
                 .Where(x => Path.GetExtension(AssetDatabase.GetAssetPath(x)) == ".cs")
-                .Cast<TextAsset>().ToArray();
+                .Cast<TextAsset>()
+                .ToArray();
             return scripts is { Length: > 0 };
         }
 
-        static string GetOutputPathFromDialog(string defaultOutputPath) {
-            return EditorUtility.SaveFolderPanel("select destination", defaultOutputPath, "");
-        }
-
-        static bool TryGetTextContentFromSelectionObjects(out string textContent) {
-            var obj = Selection.GetFiltered(typeof(TextAsset), SelectionMode.TopLevel).FirstOrDefault();
-            if (obj == null) {
-                textContent = "";
-                return false;
-            }
-
-            var path = AssetDatabase.GetAssetPath(obj);
-            var extension = Path.GetExtension(path);
-            if (extension != ".cs") {
-                textContent = "";
-                return false;
-            }
-
-            textContent = (obj as TextAsset)?.text ?? "";
-            return !string.IsNullOrEmpty(textContent);
+        static string GetOutputPathFromDialog() {
+            return EditorUtility.SaveFolderPanel("select destination", Application.dataPath, "");
         }
 
         static void GenerateScriptAsset(string content, string saveTo, string fileName) {
