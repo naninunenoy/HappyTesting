@@ -7,29 +7,62 @@ namespace HappyTesting.Editor {
     internal static partial class Generator {
         [MenuItem("Assets/HappyTesting/Generate TestCode Template")]
         public static void GenerateTestTemplate() {
-            if (!TryGetTextContentFromSelectionObjects(out var code)) {
+            // Selectionがら対象取得
+            if (!ContainsScriptInSelection(out var texts)) {
                 Debug.LogWarning("selection is not C# script");
                 return;
             }
-
-            var param = LoadEditModeTestGenerateParam(code);
-            var fullText = GetEditModeTestFullText(param);
+            // 保存先
             settings.Load();
-            var destDir = settings.outputAssetPath;
-            GenerateScriptAsset(fullText, destDir, $"{param.testClassName}.cs");
+            var destDir = GetOutputPathFromDialog(settings.outputAssetPath);
+            if (string.IsNullOrEmpty(destDir)) {
+                return;
+            }
+            // コードの生成
+            foreach (var text in texts) {
+                var param = LoadEditModeTestGenerateParam(text.text);
+                var fullText = GetEditModeTestFullText(param);
+                GenerateScriptAsset(fullText, destDir, $"{param.testClassName}.cs");
+            }
+            AssetDatabase.Refresh();
         }
 
         [MenuItem("Assets/HappyTesting/Generate Interface TestMock")]
         public static void GenerateTestMock() {
-            if (!TryGetTextContentFromSelectionObjects(out var code)) {
+            // Selectionがら対象取得
+            if (!ContainsScriptInSelection(out var texts)) {
                 Debug.LogWarning("selection is not C# script");
             }
-
-            var param = LoadInterfaceMockGenerateParam(code);
-            var gen = GetInterfaceTestMockFullText(param);
+            // 保存先
             settings.Load();
-            var destDir = settings.outputAssetPath;
-            GenerateScriptAsset(gen, destDir, $"{param.className}.cs");
+            var destDir = GetOutputPathFromDialog(settings.outputAssetPath);
+            if (string.IsNullOrEmpty(destDir)) {
+                return;
+            }
+            // コードの生成
+            foreach (var text in texts) {
+                var param = LoadInterfaceMockGenerateParam(text.text);
+                var fullText = GetInterfaceTestMockFullText(param);
+                GenerateScriptAsset(fullText, destDir, $"{param.className}.cs");
+            }
+            AssetDatabase.Refresh();
+        }
+
+        static bool ContainsScriptInSelection(out TextAsset[] scripts) {
+            var textAssets = Selection.GetFiltered(typeof(TextAsset), SelectionMode.TopLevel);
+            if (textAssets == null || textAssets.Length == 0) {
+                scripts = default;
+                return false;
+            }
+
+            scripts = textAssets
+                .Where(x => Path.GetExtension(AssetDatabase.GetAssetPath(x)) == ".cs")
+                .Cast<TextAsset>().ToArray();
+            return scripts is { Length: > 0 };
+        }
+
+        static string GetOutputPathFromDialog(string defaultOutputPath) {
+            return EditorUtility.SaveFolderPanel("select destination", defaultOutputPath, "");
         }
 
         static bool TryGetTextContentFromSelectionObjects(out string textContent) {
@@ -53,7 +86,6 @@ namespace HappyTesting.Editor {
         static void GenerateScriptAsset(string content, string saveTo, string fileName) {
             var saveFullPath = Path.Combine(string.IsNullOrEmpty(saveTo) ? "Assets" : saveTo, fileName);
             File.WriteAllText(saveFullPath, content);
-            AssetDatabase.Refresh();
         }
     }
 }
