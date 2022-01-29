@@ -57,7 +57,8 @@ namespace HappyTesting.Editor {
             if (firstClassOrStructDeclaration is not null) {
                 firstClassOrStructName = firstClassOrStructDeclaration switch {
                     StructDeclarationSyntax x => x.Identifier.Text,
-                    ClassDeclarationSyntax x => x.Identifier.Text
+                    ClassDeclarationSyntax x => x.Identifier.Text,
+                    _ => ""
                 };
             }
 
