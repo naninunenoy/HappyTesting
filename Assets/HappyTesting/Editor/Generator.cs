@@ -12,9 +12,7 @@ namespace HappyTesting.Editor {
                 Debug.LogWarning("selection is not C# script");
                 return;
             }
-            // 保存先
-            settings.Load();
-            var destDir = GetOutputPathFromDialog(settings.outputAssetPath);
+            var destDir = GetOutputPathFromDialog(Application.dataPath);
             if (string.IsNullOrEmpty(destDir)) {
                 return;
             }
@@ -33,9 +31,7 @@ namespace HappyTesting.Editor {
             if (!ContainsScriptInSelection(out var texts)) {
                 Debug.LogWarning("selection is not C# script");
             }
-            // 保存先
-            settings.Load();
-            var destDir = GetOutputPathFromDialog(settings.outputAssetPath);
+            var destDir = GetOutputPathFromDialog(Application.dataPath);
             if (string.IsNullOrEmpty(destDir)) {
                 return;
             }

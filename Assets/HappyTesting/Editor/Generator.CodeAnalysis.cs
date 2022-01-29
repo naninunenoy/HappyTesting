@@ -109,7 +109,6 @@ namespace HappyTesting.Editor {
                         generate = GetUniTaskGetterPair(method.Identifier.ToString(), typeName);
                     }
                 } else if (mem is PropertyDeclarationSyntax prop) {
-                    Debug.Log(prop.Identifier);
                     if (prop.Type.ToString().Contains("IReadOnlyReactiveProperty")) {
                         var typeName = prop.Type.ToString().Replace("IReadOnlyReactiveProperty<", "")
                             .Replace(">", "");
