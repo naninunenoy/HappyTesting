@@ -86,7 +86,7 @@ namespace HappyTesting.Editor {
 
         static string GetInterfaceTestMockFullText(InterfaceMockGenerateParam param) {
             return interfaceTestMockTemplateText
-                .Replace("<#=HERE_IS_USING#>", string.Join("\n", param.usingList))
+                .Replace("<#=HERE_IS_USING#>", string.Join("\n", param.usingList ?? ArraySegment<string>.Empty))
                 .Replace("<#=HERE_IS_NAMESPACE#>", param.namespaceName)
                 .Replace("<#=HERE_IS_CLASSNAME#>", param.className)
                 .Replace("<#=HERE_IS_INTERFACENAME#>", param.interfaceName)
