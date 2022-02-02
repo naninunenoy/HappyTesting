@@ -16,7 +16,7 @@ namespace HappyTesting.Editor {
 
         static string GetEditModeTestFullText(EditModeTestGenerateParam param) {
             return editModeTestTemplateText
-                .Replace(editModeTemplateUsingTag, string.Join("\n", param.usingList))
+                .Replace(editModeTemplateUsingTag, string.Join("\n", param.usingList ?? ArraySegment<string>.Empty))
                 .Replace(editModeTemplateNamespaceTag, param.namespaceName)
                 .Replace(editModeTemplateClassNameTag, param.className)
                 .Replace(editModeTemplateTestClassNameTag, param.testClassName);
